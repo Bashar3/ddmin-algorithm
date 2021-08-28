@@ -1,50 +1,34 @@
-import itertools
-import math
 import itertools as iters
-from collections import Counter
+import argparse
 
 n = 2
 checkNValues = []
+
+parser = argparse.ArgumentParser(description="`\n Usage python ddmin.py -s <sequence> -f <fail_input>")
+parser.add_argument("-s", type=list, dest="sequence", help="ints or chars sequence as [] ")
+parser.add_argument("-f", dest="fail", help="The expected fail input")
+parsed_args = parser.parse_args()
+
+
+def main():
+    try:
+        s = parsed_args.sequence
+        f = parsed_args.fail
+        ddmin(s, f)
+    except Exception:
+        print(parser.description)
+        exit(0)
 
 
 def ddmin(sequence, fail):
     if len(sequence) == 1:
         return sequence
     else:
-        checkInputC(sequence, fail)
-
-
-def checkInputC(sequence, fail):
-    if fail.isnumeric():
-        ddMinNumbersTest(sequence, fail)
-    else:
-        exit()
-        # ddMinChars(c, n)
-
-
-def ddMinNumbersTest(sequence, fail):
-    # n=2
-    # [a,b,c,v,v,c,b,a]
-    chunckPlace = None
-    global n
-
-    newSplitList = chunkIt(sequence, n)
-    countRepeated = countDuplicates(newSplitList, fail)
-
-    for i in range(len(countRepeated)):
-        if 0 <= countRepeated[i] <= 1:
-            n = min(2 * n, len(sequence))
-            # SplitList = chunkIt(sequence, n)
-            # a = removeChunck(SplitList, bigchunck)
-            # l = toList(a)
-            ddMinNumbersTest(sequence, fail)
-
-    else:
-        n = max(n - 1, 2)
+        print(Test(sequence, fail))
 
 
 # chunkIt()
-
+# Takes a sequence as list and the failing input and runs the core of the algorithm
 def Test(sequence, fail):
     global n
     global checkNValues
@@ -66,7 +50,7 @@ def Test(sequence, fail):
             boolList.append(True)
             print(removedChunckRevesed[i], "==> PASS")
 
-    if len(checkNValues) >= 3 and checkNValues[-1] == 2 and checkNValues[-2]==2:
+    if len(checkNValues) >= 4 and checkNValues[-1] == 2 and checkNValues[-2] == 2:
         print("Can't split anymore n =", n)
         print(removedChunckRevesed)
         exit()
@@ -88,8 +72,7 @@ def Test(sequence, fail):
                 Test(removedChunckRevesed[i], fail)
 
 
-
-
+# Chuncks the sequence into small sublists of the same length
 def chunkIt(seq, num):
     if num == 0:
         return seq
@@ -102,40 +85,31 @@ def chunkIt(seq, num):
     return out
 
 
+# Gives combinations of the cuncked lists of lists the sublists.
+# And deletes chunck 1..len(seq) and cmbine them
 def removeChunckAndMergeRest(a_list):
     removedChunck = []
-    list_of_tuples_combinations = list(iters.combinations(a_list, len(a_list)-1))
+    list_of_tuples_combinations = list(iters.combinations(a_list, len(a_list) - 1))
     list_of_lists_combinations = [list(elem) for elem in list_of_tuples_combinations]
 
     for elem in list_of_lists_combinations:
-        at = list(iters.chain.from_iterable(elem))
-        removedChunck.append(at)
+        joinSublists = list(iters.chain.from_iterable(elem))
+        removedChunck.append(joinSublists)
 
     return removedChunck
 
 
+# Counts the duplicates of each sublist for a given number
 def countDuplicates(sequence, fail):
     a = list(map(lambda x: x.count(fail), sequence))
     return a
 
 
+# Flattens a list
 def toList(alist):
     flat_list = [item for sublist in alist for item in sublist]
     return flat_list
 
 
-#print(removeChunck(chunkIt([1, 2, 3, 4, 5, 6, 7, 8], 4), 2))
-h = [[1, 2, 3, 4] , [5, 6, 7, 8]]
-an = [[1, 2],[3, 4], [5, 6], [7, 8]]
-dup = [[4, 3],[4, 3], [4, 4]]
-asd = [1,2,3,2,2,2,2,2]
-#print(removeChunck(an))
-# print(ddMinNumbersTest([1, 2, 3, 4, 5, 6, 7, 8], 2))
-at = list(map(lambda x: x.count(2), an))
-#print(removeChunckAndMergeRest(h))
-#print(countDuplicates(dup, 4))
-print(asd.count(2))
-#print(list(iters.chain.from_iterable(an)))
-print(Test([1,2,3,4,4,3,2,1], 4))
-# print(2 not in [1, 2, 3, 4])
-# print(all(iter([True, False, True])))
+if __name__ == '__main__':
+    main()
