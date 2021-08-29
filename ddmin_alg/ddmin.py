@@ -5,7 +5,7 @@ n = 2
 checkNValues = []
 
 parser = argparse.ArgumentParser(description="`\n Usage python ddmin.py -s <sequence> -f <fail_input>")
-parser.add_argument("-s", type=list, dest="sequence", help="ints or chars sequence as [] ")
+parser.add_argument("-s", type=list, dest="sequence", help="ints or chars sequence ")
 parser.add_argument("-f", dest="fail", help="The expected fail input")
 parsed_args = parser.parse_args()
 
